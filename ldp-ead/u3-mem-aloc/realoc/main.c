@@ -8,7 +8,7 @@ int main () {
    /* Initial memory allocation */
    str = (char *) malloc(15); // 15 x sizeof(char)
    // cópia
-   strcpy(str, "tutorialspoint");
+   strcpy(str, "test");
    printf("String = %s,  Address = %p\n", str, str);
 
    /* Reallocating memory */
