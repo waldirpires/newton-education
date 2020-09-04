@@ -1,4 +1,4 @@
-package br.newtonpaiva.ead.aaw.lab.api.automoveis.resources;
+package br.newtonpaiva.ead.aaw.lab.automoveis.api.resource;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import br.newtonpaiva.ead.aaw.lab.api.automoveis.request.AutomovelRequest;
-import br.newtonpaiva.ead.aaw.lab.api.automoveis.response.AutomovelResponse;
+import br.newtonpaiva.ead.aaw.lab.automoveis.api.request.AutomovelRequest;
+import br.newtonpaiva.ead.aaw.lab.automoveis.api.response.AutomovelResponse;
 
 @RequestMapping(path = "/v1/automoveis")
 public interface AutomoveisResource {
@@ -29,11 +29,15 @@ public interface AutomoveisResource {
 
 	
 	@PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<AutomovelResponse> create(@RequestBody(required = true) @Valid Optional<AutomovelRequest> request);
+    public ResponseEntity<AutomovelResponse> create(
+    		@RequestBody(required = true) @Valid Optional<AutomovelRequest> request
+    		);
 
 
 	@PutMapping(path = "/{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<AutomovelResponse> update(@PathVariable Optional<UUID> id, @RequestBody Optional<AutomovelRequest> request);
+    public ResponseEntity<AutomovelResponse> update(
+    		@PathVariable Optional<UUID> id, @RequestBody Optional<AutomovelRequest> request
+    		);
 
 
 	@DeleteMapping(path = "/{id}")    

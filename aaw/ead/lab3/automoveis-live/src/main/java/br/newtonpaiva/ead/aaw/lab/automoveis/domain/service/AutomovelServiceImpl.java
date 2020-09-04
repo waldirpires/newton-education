@@ -1,7 +1,4 @@
-package br.newtonpaiva.ead.aaw.lab.domain.automoveis.service.impl;
-
-import static br.newtonpaiva.ead.aaw.lab.common.exception.Messages.MSG_AUTOMOVEL_COM_ID_NÃO_ENCONTRADO;
-import static java.lang.String.format;
+package br.newtonpaiva.ead.aaw.lab.automoveis.domain.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,12 +8,10 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import br.newtonpaiva.ead.aaw.lab.api.automoveis.request.AutomovelRequest;
-import br.newtonpaiva.ead.aaw.lab.common.exception.Messages;
-import br.newtonpaiva.ead.aaw.lab.common.exception.NotFoundException;
-import br.newtonpaiva.ead.aaw.lab.domain.automoveis.entity.Automovel;
-import br.newtonpaiva.ead.aaw.lab.domain.automoveis.repo.AutomovelRepo;
-import br.newtonpaiva.ead.aaw.lab.domain.automoveis.service.AutomovelService;
+import br.newtonpaiva.ead.aaw.lab.automoveis.api.request.AutomovelRequest;
+import br.newtonpaiva.ead.aaw.lab.automoveis.common.exceptions.NotFoundException;
+import br.newtonpaiva.ead.aaw.lab.automoveis.domain.entities.Automovel;
+import br.newtonpaiva.ead.aaw.lab.automoveis.domain.repo.AutomovelRepo;
 
 @Component
 public class AutomovelServiceImpl implements AutomovelService {
@@ -71,7 +66,8 @@ public class AutomovelServiceImpl implements AutomovelService {
 		Optional<Automovel> a = repo.findById(id);
 		
 		if (a.isEmpty()) {
-			throw new NotFoundException(format(MSG_AUTOMOVEL_COM_ID_NÃO_ENCONTRADO, id));
+			throw new NotFoundException(
+					String.format("Automovel com Id %s não encontrado", id));
 		}
 		
 		return a.get();

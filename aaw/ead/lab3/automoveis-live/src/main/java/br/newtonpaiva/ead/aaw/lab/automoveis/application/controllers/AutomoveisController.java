@@ -1,4 +1,4 @@
-package br.newtonpaiva.ead.aaw.lab.application.automoveis.controller;
+package br.newtonpaiva.ead.aaw.lab.automoveis.application.controllers;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -16,10 +16,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.newtonpaiva.ead.aaw.lab.api.automoveis.request.AutomovelRequest;
-import br.newtonpaiva.ead.aaw.lab.api.automoveis.resources.AutomoveisResource;
-import br.newtonpaiva.ead.aaw.lab.api.automoveis.response.AutomovelResponse;
-import br.newtonpaiva.ead.aaw.lab.domain.automoveis.service.AutomovelService;
+import br.newtonpaiva.ead.aaw.lab.automoveis.api.request.AutomovelRequest;
+import br.newtonpaiva.ead.aaw.lab.automoveis.api.resource.AutomoveisResource;
+import br.newtonpaiva.ead.aaw.lab.automoveis.api.response.AutomovelResponse;
+import br.newtonpaiva.ead.aaw.lab.automoveis.domain.service.AutomovelService;
 
 @RestController
 @Validated
