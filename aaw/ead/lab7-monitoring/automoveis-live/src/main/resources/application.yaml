@@ -1,0 +1,14 @@
+
+spring:
+  data:
+    mongodb:
+      database: test_db
+      port: 27017
+      host: localhost
+      
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info, health, metrics, prometheus
+      
