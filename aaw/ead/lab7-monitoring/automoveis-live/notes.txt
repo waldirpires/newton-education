@@ -1,3 +1,10 @@
+https://imgur.com/a/T9otXyQ
+
+Prometheus
+- http://localhost:9090
+https://prometheus.io/docs/prometheus/latest/getting_started/
 
 Grafana:
 - pw: aaw20202
+- http://localhost:3000
+https://grafana.com/grafana/dashboards/4701
