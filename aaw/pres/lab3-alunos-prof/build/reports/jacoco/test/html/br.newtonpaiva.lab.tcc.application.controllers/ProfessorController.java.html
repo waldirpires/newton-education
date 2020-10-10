@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProfessorController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tcc</a> &gt; <a href="index.source.html" class="el_package">br.newtonpaiva.lab.tcc.application.controllers</a> &gt; <span class="el_source">ProfessorController.java</span></div><h1>ProfessorController.java</h1><pre class="source lang-java linenums">package br.newtonpaiva.lab.tcc.application.controllers;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RestController;
+
+import br.newtonpaiva.lab.tcc.api.professores.request.ProfessorRequest;
+import br.newtonpaiva.lab.tcc.api.professores.resource.ProfessoresResource;
+import br.newtonpaiva.lab.tcc.api.professores.response.ProfessorResponse;
+import br.newtonpaiva.lab.tcc.domain.entity.Curso;
+import br.newtonpaiva.lab.tcc.domain.entity.Professor;
+import br.newtonpaiva.lab.tcc.domain.service.CursoService;
+import br.newtonpaiva.lab.tcc.domain.service.ProfessorService;
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+<span class="nc" id="L25">@Slf4j</span>
+@Validated
+<span class="nc" id="L27">public class ProfessorController implements ProfessoresResource{</span>
+
+    @Autowired
+    private ProfessorService professorService;
+    
+    @Autowired
+    private CursoService cursoService;
+
+    @Override
+    public ResponseEntity&lt;List&lt;ProfessorResponse&gt;&gt; getAll() {
+<span class="nc" id="L37">        log.info(&quot;GET alunos&quot;);</span>
+        
+<span class="nc" id="L39">        List&lt;Professor&gt; lista = professorService.getProfessores();</span>
+        
+<span class="nc" id="L41">        List&lt;ProfessorResponse&gt; response = new ArrayList&lt;ProfessorResponse&gt;();</span>
+        
+<span class="nc" id="L43">        lista.forEach(aluno -&gt;  {</span>
+<span class="nc" id="L44">            response.add(ProfessorResponse.buildFrom(aluno));</span>
+<span class="nc" id="L45">        });</span>
+        
+<span class="nc" id="L47">        return ResponseEntity.ok(response);</span>
+    }
+
+    @Override
+    public ResponseEntity&lt;ProfessorResponse&gt; getById(Optional&lt;String&gt; id) {
+<span class="nc" id="L52">        log.info(&quot;GET professor by ID: {}&quot;, id);</span>
+
+<span class="nc" id="L54">        Professor professor = professorService.getById(id.get());</span>
+        
+<span class="nc" id="L56">        return ResponseEntity.ok(ProfessorResponse.buildFrom(professor));</span>
+    }
+
+    @Override
+    public ResponseEntity&lt;ProfessorResponse&gt; create(@Valid Optional&lt;ProfessorRequest&gt; request) {
+<span class="nc" id="L61">        log.info(&quot;POST criar professor: {}&quot;, request.get());</span>
+
+<span class="nc" id="L63">        Curso curso = cursoService.getById(request.get().getCursoId());</span>
+
+<span class="nc" id="L65">        Professor professor = new Professor()</span>
+<span class="nc" id="L66">                .withCurso(curso)</span>
+<span class="nc" id="L67">                .withMatricula(request.get().getMatricula())</span>
+<span class="nc" id="L68">                .withNomeCompleto(request.get().getNomeCompleto())</span>
+<span class="nc" id="L69">                .withFormação(request.get().getFormação());</span>
+        
+<span class="nc" id="L71">        professor = professorService.create(professor);</span>
+        
+<span class="nc" id="L73">        return ResponseEntity.status(HttpStatus.CREATED).body(ProfessorResponse.buildFrom(professor));</span>
+    }
+
+    @Override
+    public ResponseEntity&lt;ProfessorResponse&gt; update(Optional&lt;String&gt; id, Optional&lt;ProfessorRequest&gt; request) {
+<span class="nc" id="L78">        log.info(&quot;PUT atualizar professor: {} {}&quot;, id, request);</span>
+
+<span class="nc" id="L80">        Curso curso = cursoService.getById(request.get().getCursoId());</span>
+
+<span class="nc" id="L82">        Professor professor = new Professor()</span>
+<span class="nc" id="L83">                .withCurso(curso)</span>
+<span class="nc" id="L84">                .withMatricula(request.get().getMatricula())</span>
+<span class="nc" id="L85">                .withNomeCompleto(request.get().getNomeCompleto())</span>
+<span class="nc" id="L86">                .withFormação(request.get().getFormação());</span>
+
+<span class="nc" id="L88">        professor = professorService.update(id.get(), professor);</span>
+        
+<span class="nc" id="L90">        return ResponseEntity.status(HttpStatus.OK).body(ProfessorResponse.buildFrom(professor));</span>
+    }
+
+    @Override
+    public ResponseEntity&lt;Void&gt; deleteById(Optional&lt;String&gt; id) {
+<span class="nc" id="L95">        log.info(&quot;DELETE remover professor: {}&quot;, id);</span>
+        
+<span class="nc" id="L97">        professorService.deleteById(id.get());</span>
+
+<span class="nc" id="L99">        return new ResponseEntity&lt;Void&gt;(HttpStatus.NO_CONTENT);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

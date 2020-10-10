@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CursoController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tcc</a> &gt; <a href="index.source.html" class="el_package">br.newtonpaiva.lab.tcc.application.controllers</a> &gt; <span class="el_source">CursoController.java</span></div><h1>CursoController.java</h1><pre class="source lang-java linenums">package br.newtonpaiva.lab.tcc.application.controllers;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RestController;
+
+import br.newtonpaiva.lab.tcc.api.cursos.request.CursoRequest;
+import br.newtonpaiva.lab.tcc.api.cursos.resource.CursosResource;
+import br.newtonpaiva.lab.tcc.api.cursos.response.CursoResponse;
+import br.newtonpaiva.lab.tcc.common.exception.NotFoundException;
+import br.newtonpaiva.lab.tcc.domain.entity.Curso;
+import br.newtonpaiva.lab.tcc.domain.service.CursoService;
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+<span class="nc" id="L24">@Slf4j</span>
+@Validated
+<span class="nc" id="L26">public class CursoController implements CursosResource {</span>
+
+    @Autowired
+    private CursoService cursoService;
+
+    @Override
+    public ResponseEntity&lt;List&lt;CursoResponse&gt;&gt; getAll() {
+<span class="nc" id="L33">        log.info(&quot;GET cursos&quot;);</span>
+
+        // recupero a lista persistida
+<span class="nc" id="L36">        List&lt;Curso&gt; lista = cursoService.getCursos();</span>
+
+        // preparando o corpo da minha respota REST/JSON
+<span class="nc" id="L39">        List&lt;CursoResponse&gt; response = new ArrayList&lt;CursoResponse&gt;();</span>
+
+        // para cada curso que eu tenho, coverter de curso para curso-response
+<span class="nc" id="L42">        lista.forEach(curso -&gt; {</span>
+<span class="nc" id="L43">            response.add(new CursoResponse(curso));</span>
+<span class="nc" id="L44">        });</span>
+
+        // devolvendo a resposta
+<span class="nc" id="L47">        return ResponseEntity.ok(response);</span>
+    }
+
+    @Override
+    public ResponseEntity&lt;CursoResponse&gt; getById(Optional&lt;String&gt; id) {
+<span class="nc" id="L52">        log.info(&quot;GET curso by ID: {}&quot;, id);</span>
+
+<span class="nc" id="L54">        Curso curso = cursoService.getById(id.get());</span>
+
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        if (curso == null) {</span>
+            // retornar HTTP 404
+<span class="nc" id="L58">            throw new NotFoundException(id.get());</span>
+        }
+
+<span class="nc" id="L61">        return ResponseEntity.ok(new CursoResponse(curso));</span>
+    }
+
+    @Override
+    public ResponseEntity&lt;CursoResponse&gt; create(Optional&lt;CursoRequest&gt; request) {
+<span class="nc" id="L66">        log.info(&quot;POST criar curso: {}&quot;, request);</span>
+
+<span class="nc" id="L68">        log.info(request.get().toString());</span>
+
+        // criando um obj curso a partir da requisição JSON
+<span class="nc" id="L71">        Curso curso = new Curso().withArea(request.get().getArea()).withId(UUID.randomUUID().toString())</span>
+<span class="nc" id="L72">                .withNome(request.get().getNome()).withNumSemestre(request.get().getNumSemestre())</span>
+<span class="nc" id="L73">                .withRegime(request.get().getRegime());</span>
+
+<span class="nc" id="L75">        curso = cursoService.create(curso);</span>
+
+        // devolver a resposta do curso criado
+<span class="nc" id="L78">        return ResponseEntity.status(HttpStatus.CREATED).body(new CursoResponse(curso));</span>
+    }
+
+    @Override
+    public ResponseEntity&lt;CursoResponse&gt; update(Optional&lt;String&gt; id, Optional&lt;CursoRequest&gt; request) {
+<span class="nc" id="L83">        log.info(&quot;PUT atualizar curso: {} {}&quot;, id, request);</span>
+
+<span class="nc" id="L85">        Curso curso = new Curso().withArea(request.get().getArea()).withNome(request.get().getNome())</span>
+<span class="nc" id="L86">                .withNumSemestre(request.get().getNumSemestre()).withRegime(request.get().getRegime());</span>
+
+        // salvar em memória
+<span class="nc" id="L89">        curso = cursoService.update(id.get(), curso);</span>
+
+        // devolver a resposta do curso criado
+<span class="nc" id="L92">        return ResponseEntity.status(HttpStatus.OK).body(new CursoResponse(curso));</span>
+    }
+
+    @Override
+    public ResponseEntity&lt;Void&gt; deleteById(Optional&lt;String&gt; id) {
+<span class="nc" id="L97">        log.info(&quot;DELETE remover curso: {}&quot;, id);</span>
+
+<span class="nc" id="L99">        cursoService.deleteById(id.get());</span>
+
+<span class="nc" id="L101">        return new ResponseEntity&lt;Void&gt;(HttpStatus.NO_CONTENT);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
